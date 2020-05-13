@@ -1,6 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
 
 from DataStorage import DataStorage
 
@@ -24,8 +23,8 @@ class GradientDescent:
         n = len(self.__features[0])
         J = 0
         for i in range(n):
-            J += (np.matmul(self.__theta.transpose(), self.__features[0][i]) - self.__results[i])**2
-        return J/(2 * m)
+            J += (np.matmul(self.__theta.transpose(), self.__features[0][i]) - self.__results[i]) ** 2
+        return J / (2 * m)
 
     def scale(self):
         for i in range(len(self.__theta)):
@@ -37,20 +36,19 @@ class GradientDescent:
     def gradient(self, num_iter, alpha):
         m = len(self.__results)
         n = len(self.__features_norm[0][0])
-        #self.scale()
+        # self.scale()
         for iter in range(num_iter):
             temp = np.zeros(len(self.__theta))
             for i in range(n):
                 hO = 0
                 for j in range(m):
-                    hO += (np.matmul(self.__theta.transpose(), self.__features_norm[0][j]) - self.__results[j]) * self.__features_norm[0][j, i]
+                    hO += (np.matmul(self.__theta.transpose(), self.__features_norm[0][j]) - self.__results[j]) \
+                          * self.__features_norm[0][j, i]
                 temp[i] = self.__theta[i] - alpha * hO / m
 
             self.__theta = temp
             self.__j_function.append(self.cost_function())
         return self.__theta
-
-
 
     def plot_j(self, num_iter):
         plt.plot([i for i in range(num_iter)], self.__j_function)
@@ -65,7 +63,8 @@ class GradientDescent:
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-        ax.plot(self.__features[0][:, 0], self.__features[0][:, 1], np.matmul(self.__theta.transpose(), self.__features[0].transpose()))
+        ax.plot(self.__features[0][:, 0], self.__features[0][:, 1],
+                np.matmul(self.__theta.transpose(), self.__features[0].transpose()))
         ax.scatter(self.__features[0][:, 0], self.__features[0][:, 1], self.__results, color='r')
         ax.view_init(0, 0)
         plt.show()
